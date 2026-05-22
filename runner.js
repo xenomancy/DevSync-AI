@@ -73,7 +73,7 @@ global.prompt = function(message) {
                 compileCmd = 'javac';
                 compileArgs = [filename];
                 cmd = 'java';
-                args = [className];
+                args = ['-cp', '.', className];
                 isCompiled = true;
                 break;
             default:
