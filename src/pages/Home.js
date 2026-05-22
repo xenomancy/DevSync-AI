@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps, jsx-a11y/anchor-is-valid */
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidV4 } from 'uuid';
 import toast from 'react-hot-toast';
@@ -134,7 +135,7 @@ const Home = () => {
                             Need a collaborative space? Create a &nbsp;
                             <a
                                 onClick={createNewRoom}
-                                href=""
+                                href="#"
                                 className="createNewBtn"
                             >
                                 new room
