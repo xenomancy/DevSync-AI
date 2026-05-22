@@ -53,7 +53,7 @@ global.prompt = function(message) {
                 break;
             case 'python':
                 filename = 'main.py';
-                cmd = 'python';
+                cmd = process.platform === 'win32' ? 'python' : 'python3';
                 args = [filename];
                 break;
             case 'cpp':
@@ -65,12 +65,16 @@ global.prompt = function(message) {
                 isCompiled = true;
                 break;
             case 'java':
-                // Search for class name in the code
+                // Compile Java source file then run the class
                 const match = code.match(/public\s+class\s+(\w+)/) || code.match(/class\s+(\w+)/);
                 const className = match ? match[1] : 'Main';
                 filename = `${className}.java`;
+                // Set compile command and args
+                compileCmd = 'javac';
+                compileArgs = [filename];
                 cmd = 'java';
-                args = [filename];
+                args = [className];
+                isCompiled = true;
                 break;
             default:
                 cleanup(execDir);
@@ -106,10 +110,14 @@ global.prompt = function(message) {
                         exitCode: code
                     });
                 }
-                // Run the compiled binary
-                // On Windows, prefix running local executables with .\ if needed or run directly with shell: true
-                const runCmd = process.platform === 'win32' ? '.\\main.exe' : './main.exe';
-                executeProcess(runCmd, args, execDir, input, startTime, resolve);
+                // Run the compiled binary or class
+                if (compileCmd === 'javac') {
+                    // For Java, run the class name
+                    executeProcess('java', args, execDir, input, startTime, resolve);
+                } else {
+                    const runCmd = process.platform === 'win32' ? '.\\main.exe' : './main.exe';
+                    executeProcess(runCmd, args, execDir, input, startTime, resolve);
+                }
             });
 
             compileProcess.on('error', (err) => {
