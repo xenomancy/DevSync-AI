@@ -242,3 +242,20 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+// Keep-awake ping function to prevent Render Free Tier from sleeping
+const https = require('https');
+const PUBLIC_URL = process.env.RENDER_EXTERNAL_URL || 'https://devsync-ai-6elw.onrender.com';
+
+function keepAwake() {
+    if (!PUBLIC_URL) return;
+    console.log(`Sending keep-awake ping to ${PUBLIC_URL}...`);
+    https.get(PUBLIC_URL, (res) => {
+        console.log(`Keep-awake ping status: ${res.statusCode}`);
+    }).on('error', (err) => {
+        console.error('Keep-awake ping error:', err.message);
+    });
+}
+
+// Ping every 10 minutes (600,000 ms) to keep the app active
+setInterval(keepAwake, 10 * 60 * 1000);
