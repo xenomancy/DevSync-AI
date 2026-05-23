@@ -14,10 +14,18 @@ app.use(express.json());
 
 // Groq API Integration (via OpenAI SDK compatibility layer)
 const { OpenAI } = require('openai');
-const openai = new OpenAI({
-    apiKey: process.env.GROQ_API_KEY || '',
-    baseURL: 'https://api.groq.com/openai/v1',
-});
+let openai;
+const apiKey = process.env.GROQ_API_KEY;
+if (apiKey && !apiKey.startsWith('YOUR_')) {
+    try {
+        openai = new OpenAI({
+            apiKey: apiKey,
+            baseURL: 'https://api.groq.com/openai/v1',
+        });
+    } catch (err) {
+        console.error('Failed to initialize OpenAI client:', err.message);
+    }
+}
 
 // Helper to generate simulated responses when API key is missing or offline
 function generateMockResponse(action, prompt) {
