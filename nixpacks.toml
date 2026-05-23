@@ -1,6 +1,0 @@
-[phases.setup]
-# Keep Node.js and other auto-detected packages, and install JDK 21, GCC, and Python 3
-nixPkgs = ["...", "jdk21", "gcc", "python3"]
-
-[variables]
-NIXPACKS_JDK_VERSION = "21"
